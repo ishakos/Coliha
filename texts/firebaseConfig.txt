@@ -1,0 +1,12 @@
+1-google firebase console and create new project
+2-choose storage keep pressing next
+3-npm install firebase 
+4-npm install -g firebase-tools
+5-go to project settings, general, scroll down u find buttons fihom icons, choose "web application" one
+6-mark Firebase Hosting and register app
+7-create firebase.js and paste everything wch l9it f settings
+8-remove getAnalytics, and paste this line
+◘ import { getStorage } from "firebase/storage"; 
+◘ export const storage = getStorage(app);
+9-roh l storage, rules, bedel "if false" to "if true"
+10-start using the firebase features

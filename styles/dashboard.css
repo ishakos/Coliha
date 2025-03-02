@@ -1,0 +1,27 @@
+.dashboard-page {
+  position: relative;
+}
+.order-edit-form {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: lightblue;
+  z-index: 500;
+}
+.order-edit-form tr {
+  background-color: lightcoral;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.order-edit-form tr td {
+  background-color: lightcyan;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
