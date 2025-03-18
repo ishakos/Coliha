@@ -157,7 +157,7 @@ export function AuthProvider({ children }) {
       }
     };
     fetchUser();
-  }, [pathname]);
+  }, [pathname, router]);
 
   //context2
   useEffect(() => {
@@ -197,7 +197,7 @@ export function AuthProvider({ children }) {
       setImageUrl(user.profilePic);
       setPfpLoading(false);
     }
-  }, [user]);
+  }, [router, user]);
 
   return (
     <AuthCtx.Provider

@@ -31,6 +31,7 @@ export default function EmailVerification() {
         .then((response) => {
           if (response.data.verified) {
             setUpdated(true);
+            setLoading(false);
           } else {
             setError("Verification link expired. Please try again.");
           }
@@ -49,7 +50,7 @@ export default function EmailVerification() {
     }
 
     return () => controller.abort(); // Cleanup
-  }, []);
+  }, [domain]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">

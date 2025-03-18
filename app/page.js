@@ -9,7 +9,7 @@ export default function App() {
   useAuth();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-6">
       {loading ? (
         <p className="text-lg font-semibold text-gray-700">Loading Screen...</p>
       ) : !logged ? (

@@ -14,7 +14,13 @@ export default function Dashboard() {
   function generateRandomOrders() {
     const stores = ["Shopify", "Foorweb"];
     const products = ["Shoes", "Pants", "T-Shirt"];
-    const statuses = ["Confirmed", "Canceled", "Non Confirmed", "Onship"];
+    const statuses = [
+      "Confirmed",
+      "Canceled",
+      "Non Confirmed",
+      "Onship",
+      "Back",
+    ];
     const dtypes = ["Domicile", "Stopdesk"];
     const cities = [
       "Alger",
@@ -119,7 +125,6 @@ export default function Dashboard() {
     return orders;
   }
 
-
   //delete order
   const onDeleteOrder = (row) => {
     if (!row) return;
@@ -151,46 +156,11 @@ export default function Dashboard() {
         }
       });
   };
-  /*
-  const onSubmit = (data) => {
-    const newData = Object.values(data);
-    const row = newData.pop();
-    axios
-      .post(
-        `${domain}/orders/update/`,
-        {
-          sheetID: user.sheetID,
-          rowNumber: row,
-          newData: newData,
-        },
-        {
-          headers: {
-            accessToken: localStorage.getItem("accessToken"),
-          },
-        }
-      )
-      .then((response) => {
-        if (response.data.noToken) {
-          router.push("/unwanted-page");
-          sessionStorage.clear();
-          localStorage.clear();
-        }
-        if (response.data.updated) {
-          //update ui
-        } else {
-          alert("Update failed");
-        }
-      });
-  };
-  */
-
-  const onSaveClicked = (formData) => {
-    console.log("Submitted Data:", formData);
-  };
 
   //generate data
   const onGenerate = () => {
     let generatedValues = generateRandomOrders();
+    console.log(orders);
     axios
       .post(
         `${domain}/orders/create/`,
@@ -234,7 +204,8 @@ export default function Dashboard() {
                   setOrders={setOrders}
                   onGenerate={onGenerate}
                   onDeleteOrder={onDeleteOrder}
-                  onSaveClicked={onSaveClicked}
+                  user={user}
+                  domain={domain}
                 />
               </>
             ) : (
@@ -259,7 +230,8 @@ function OrdersTable({
   setOrders,
   onGenerate,
   onDeleteOrder,
-  onSaveClicked,
+  user,
+  domain,
 }) {
   const [editingIndex, setEditingIndex] = useState(null);
   const [expandedRow, setExpandedRow] = useState(null);
@@ -288,8 +260,11 @@ function OrdersTable({
 
       {creating && (
         <OrderForm
+          user={user}
+          domain={domain}
+          mode="create"
+          initialValues={Array(19).fill("")}
           onSubmit={(newOrder) => {
-            onSaveClicked(newOrder);
             setOrders((prev) => [...prev, newOrder]);
             setCreating(false);
           }}
@@ -308,6 +283,7 @@ function OrdersTable({
             <th className="border p-2">Delivery</th>
             <th className="border p-2">Phone</th>
             <th className="border p-2">Note</th>
+            <th className="border p-2">Status</th>
             <th className="border p-2">Actions</th>
           </tr>
         </thead>
@@ -319,7 +295,11 @@ function OrdersTable({
                 <tr>
                   <td colSpan="9" className="border p-2">
                     <OrderForm
-                      initialValues={editValues} // Pass selected order values
+                      mode="edit"
+                      index={index}
+                      user={user}
+                      domain={domain}
+                      initialValues={editValues}
                       onSubmit={(updatedOrder) => {
                         setOrders((prev) =>
                           prev.map((o, i) => (i === index ? updatedOrder : o))
@@ -342,6 +322,7 @@ function OrdersTable({
                     <td className="border p-2">{order[7]}</td>
                     <td className="border p-2">{order[8]}</td>
                     <td className="border p-2">{order[15]}</td>
+                    <td className="border p-2">{order[11]}</td>
                     <td className="border p-2 flex gap-2">
                       <button
                         className="px-2 py-1 bg-blue-500 text-white rounded"
@@ -428,9 +409,17 @@ function OrdersTable({
   );
 }
 
-function OrderForm({ initialValues, onSubmit, onCancel }) {
+function OrderForm({
+  initialValues,
+  onSubmit,
+  onCancel,
+  mode,
+  index,
+  user,
+  domain,
+}) {
   const [formValues, setFormValues] = useState(
-    initialValues || Array(19).fill("") // Default to empty array if no values
+    initialValues || Array(19).fill("")
   );
   const getCurrentDate = () => new Date().toISOString().split("T")[0];
 
@@ -456,12 +445,71 @@ function OrderForm({ initialValues, onSubmit, onCancel }) {
     });
   };
 
+  const customOnSubmit = (e) => {
+    e.preventDefault(); // Prevent page refresh
+    if (mode === "create") {
+      axios
+        .post(
+          `${domain}/orders/create/`,
+          {
+            sheetID: user.sheetID,
+            values: formValues,
+          },
+          {
+            headers: {
+              accessToken: localStorage.getItem("accessToken"),
+            },
+          }
+        )
+        .then((response) => {
+          if (response.data.noToken) {
+            router.push("/unwanted-page");
+            sessionStorage.clear();
+            localStorage.clear();
+          }
+          if (response.data.generated) {
+            //update the ui
+          } else {
+            alert("Create order failed");
+            window.location.reload();
+          }
+        });
+    } else if (mode === "edit") {
+      axios
+        .post(
+          `${domain}/orders/update/`,
+          {
+            sheetID: user.sheetID,
+            rowNumber: index + 1,
+            newData: formValues,
+          },
+          {
+            headers: {
+              accessToken: localStorage.getItem("accessToken"),
+            },
+          }
+        )
+        .then((response) => {
+          if (response.data.noToken) {
+            router.push("/unwanted-page");
+            sessionStorage.clear();
+            localStorage.clear();
+          }
+          if (response.data.updated) {
+            //update ui
+          } else {
+            alert("Update failed");
+            window.location.reload();
+          }
+        });
+    }
+
+    onSubmit(formValues);
+  };
+
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(formValues);
-      }}
+      onSubmit={customOnSubmit}
       className="flex flex-col gap-2 p-4 bg-gray-100 border rounded"
     >
       {/* Store (Read-Only) */}
@@ -474,6 +522,7 @@ function OrderForm({ initialValues, onSubmit, onCancel }) {
       />
 
       <input
+        required
         type="text"
         placeholder="Product"
         value={formValues[1]}
@@ -605,13 +654,13 @@ function OrderForm({ initialValues, onSubmit, onCancel }) {
       <div className="flex gap-2 mt-4">
         <button
           type="submit"
-          className="px-4 py-2 bg-green-500 text-white rounded"
+          className="px-4 py-2 bg-green-500 text-white rounded cursor-pointer hover:bg-green-600 transition-[0.3s]"
         >
           Save
         </button>
         <button
           type="button"
-          className="px-4 py-2 bg-gray-500 text-white rounded"
+          className="px-4 py-2 bg-gray-500 text-white rounded "
           onClick={onCancel}
         >
           Cancel
