@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -9,91 +9,91 @@ import axios from "axios";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error1, setError1] = useState(false);
-  const [error2, setError2] = useState(false);
+  const [error, setError] = useState("");
   const [logging, setLogging] = useState(false);
   const router = useRouter();
   const { domain } = AuthContext();
 
-  const containerStyles = {
-    opacity: logging ? 0.6 : 1,
-    pointerEvents: logging ? "none" : "auto",
-  };
-
-  const login = () => {
-    if (!username || !password) return;
+  const handleLogin = async () => {
+    if (!username || !password) {
+      setError("Please fill in all fields.");
+      return;
+    }
     setLogging(true);
-    const data = { username: username, password: password };
-    axios.post(`${domain}/users/login/`, data).then((response) => {
-      if (response.data.noExist) {
-        setError1(true);
-      } else if (response.data.wrongPass) {
-        setError2(true);
-      } else if (response.data.error) {
-        alert(response.data.error);
+
+    try {
+      const { data } = await axios.post(`${domain}/users/login/`, {
+        username,
+        password,
+      });
+
+      if (data.noExist) {
+        setError("User does not exist.");
+      } else if (data.wrongPass) {
+        setError("Wrong password.");
+      } else if (data.error) {
+        setError(data.error);
       } else {
-        localStorage.setItem("accessToken", response.data);
+        localStorage.setItem("accessToken", data);
         router.push("/dashboard");
       }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
       setLogging(false);
-    });
+    }
   };
 
   return (
-    <div className="login-form" style={containerStyles}>
-      <Hint1 error1={error1} />
-      <input
-        type="text"
-        placeholder="username"
-        required
-        onSelect={() => {
-          setError1(() => !true);
-          setError2(() => !true);
-        }}
-        onChange={(event) => {
-          setUsername(event.target.value);
-        }}
-      />
-      <Hint2 error2={error2} />
-      <input
-        type="password"
-        placeholder="password"
-        required
-        onSelect={() => {
-          setError1(() => !true);
-          setError2(() => !true);
-        }}
-        onChange={(event) => {
-          setPassword(event.target.value);
-        }}
-      />
-      <button type="submit" onClick={login}>
-        Login
-      </button>
-      <Link href="/register">Register</Link>
-      <Link href="/forgot-password" target="_blank" rel="noopener noreferrer">
-        Forgot Password
-      </Link>
+    <div className="min-h-screen flex items-start pt-25 justify-center bg-gray-900 text-white">
+      <div
+        className={`bg-gray-800 p-8 rounded-lg shadow-lg text-center w-full max-w-md ${
+          logging ? "opacity-60 pointer-events-none" : ""
+        }`}
+      >
+        <h2 className="text-2xl font-bold mb-4">Login</h2>
+
+        {error && <p className="text-red-400 mb-4">{error}</p>}
+
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full px-4 py-2 rounded-md bg-gray-700 text-white mb-3 focus:outline-none"
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-4 py-2 rounded-md bg-gray-700 text-white mb-3 focus:outline-none"
+        />
+
+        <button
+          type="submit"
+          onClick={handleLogin}
+          className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-md transition"
+          disabled={logging}
+        >
+          {logging ? "Logging in..." : "Login"}
+        </button>
+
+        <div className="flex justify-between mt-4 text-sm">
+          <Link href="/register" className="text-blue-400 hover:underline">
+            Register
+          </Link>
+          <Link
+            href="/forgot-password"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+      </div>
     </div>
-  );
-}
-
-function Hint1({ error1 }) {
-  return (
-    <>
-      {error1 ? (
-        <span className="error-username">User Does Not Exist</span>
-      ) : (
-        <></>
-      )}
-    </>
-  );
-}
-
-function Hint2({ error2 }) {
-  return (
-    <>
-      {error2 ? <span className="error-username">Wrong Password</span> : <></>}
-    </>
   );
 }

@@ -9,15 +9,12 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const footer = <footer>Footer</footer>;
-
   return (
     <html lang="en">
       <body>
         <AuthProvider>
           <Header />
           {children}
-          {footer}
         </AuthProvider>
       </body>
     </html>

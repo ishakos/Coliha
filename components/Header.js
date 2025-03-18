@@ -3,143 +3,128 @@
 import Link from "next/link";
 import { AuthContext, ProfilePicContext } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { logged, loading, purchasedOffer, setOrders } = AuthContext();
   const { imageUrl, pfpLoading } = ProfilePicContext();
   const pathname = usePathname();
+  const router = useRouter();
 
   const logout = () => {
     localStorage.clear();
     sessionStorage.clear();
     setOrders([]);
+    router.push("/");
   };
 
   const features = () => {
-    if (!purchasedOffer || loading) return <></>;
+    if (!purchasedOffer || loading) return null;
     const featureNames = ["Feature A", "Feature B", "Feature C", "Feature D"];
 
     return (
-      <>
-        {purchasedOffer?.features?.map((feature, index) => {
-          return (
-            <Link key={index} href={`/dashboard/${feature}`}>
-              {featureNames[index]}
-            </Link>
-          );
-        })}
-        {purchasedOffer.noAccess ? (
-          <Link href={"/no-access"}>{purchasedOffer.noAccess}</Link>
-        ) : (
-          <></>
+      <div className="flex flex-wrap gap-3">
+        {purchasedOffer?.features?.map((feature, index) => (
+          <Link
+            key={index}
+            href={`/dashboard/${feature}`}
+            className="text-white hover:text-teal-300 transition duration-300 no-underline"
+          >
+            {featureNames[index]}
+          </Link>
+        ))}
+        {purchasedOffer.noAccess && (
+          <Link
+            href="/no-access"
+            className="text-white hover:text-teal-300 transition duration-300 no-underline"
+          >
+            {purchasedOffer.noAccess}
+          </Link>
         )}
-      </>
+      </div>
     );
   };
 
   const headerItem = () => {
-    //"email-verifcation/[token]/[id]" route
-    if (/^\/email-verification\/[^\/]+\/[^\/]+$/.test(pathname)) {
-      return <></>;
+    if (
+      /^\/(email-verification|reset-password)\/[^\/]+\/[^\/]+$/.test(
+        pathname
+      ) ||
+      ["/forgot-password", "/reset-password"].includes(pathname)
+    ) {
+      return null;
     }
-    //"reset-password/[token]/[id]" route
-    if (/^\/reset-password\/[^\/]+\/[^\/]+$/.test(pathname)) {
-      return <></>;
-    }
-    if (pathname === "/forgot-password") {
-      return <></>;
-    }
-    if (pathname === "/reset-password") {
-      return <></>;
-    }
+
     if (loading) {
-      return <header>Loading Header...</header>;
-    } else {
-      switch (pathname) {
-        case "/":
-          return (
-            <header>
-              <p>Home</p>
-              <p>header</p>
-              {!logged ? (
-                <Link href="/login">Login</Link>
-              ) : (
-                <p>Logging in...</p>
-              )}
-            </header>
-          );
-        case "/login":
-          return (
-            <header>
-              {!logged ? <Link href={"/"}>Go home</Link> : <p>Logging in...</p>}
-              <p>header</p>
-              <p>Fill your infos</p>
-            </header>
-          );
-        case "/register":
-          return (
-            <header>
-              <Link href={logged ? "/dashboard" : "/"}>Go home</Link>
-              <p>header</p>
-              <Link href="/login">Login</Link>
-            </header>
-          );
-        case "/unwanted-page":
-          return (
-            <header>
-              <Link href={logged ? "/dashboard" : "/"}>Go home</Link>
-              <p>header</p>
-              <p>Error Page</p>
-            </header>
-          );
-        case "/no-access":
-        case "/settings":
-        case "/subscriptions":
-        case "/dashboard":
-        case "/dashboard/feature-a":
-        case "/dashboard/feature-b":
-        case "/dashboard/feature-c":
-        case "/dashboard/feature-d":
-          if (logged) {
-            return (
-              <header>
-                <Link href="/dashboard">Dashboard</Link>
-                {features()}
-                <Link href="/subscriptions">Subscriptions</Link>
-                {!pfpLoading ? (
-                  <div
-                    style={{
-                      backgroundImage: `url(${imageUrl})`,
-                      backgroundSize: "cover",
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "50% 50%",
-                      width: "60px", // Add width and height to see the background image
-                      height: "60px",
-                      borderRadius: "100%",
-                    }}
-                  ></div>
-                ) : (
-                  <p>Pfp loading...</p>
-                )}
-                <Link href="/settings">Settings</Link>
-                <Link href="/" onClick={logout}>
-                  Logout
-                </Link>
-              </header>
-            );
-          } else {
-            return (
-              <header>
-                <p>Dashboard</p>
-                <p>header</p>
-                <p>Logging out...</p>
-              </header>
-            );
-          }
-        default:
-          return <></>;
-      }
+      return (
+        <header className="text-center text-white py-4 bg-gray-800">
+          Loading Header...
+        </header>
+      );
     }
+
+    return (
+      <header className="bg-gray-900 text-white shadow-lg py-4 px-6 flex flex-col md:flex-row justify-between items-center border-b border-gray-700">
+        <div className="flex flex-wrap items-center gap-4">
+          <Link
+            href={logged ? "/dashboard" : "/"}
+            className="text-xl font-bold text-white hover:text-teal-400 transition duration-300 no-underline"
+          >
+            {pathname === "/" ? "Home" : "Go Home"}
+          </Link>
+          {logged && (
+            <Link
+              href="/dashboard"
+              className="text-white hover:text-teal-400 transition duration-300 no-underline"
+            >
+              Dashboard
+            </Link>
+          )}
+          {logged && features()}
+          {logged && (
+            <Link
+              href="/subscriptions"
+              className="text-white hover:text-teal-400 transition duration-300 no-underline"
+            >
+              Subscriptions
+            </Link>
+          )}
+        </div>
+        <div className="flex items-center gap-4 mt-4 md:mt-0">
+          {logged ? (
+            <>
+              {!pfpLoading ? (
+                <div
+                  className="w-12 h-12 bg-gray-400 rounded-full bg-cover bg-center border-2 border-white"
+                  style={{ backgroundImage: `url(${imageUrl})` }}
+                ></div>
+              ) : (
+                <p className="text-sm">Pfp loading...</p>
+              )}
+              <Link
+                href="/settings"
+                className="text-white hover:text-teal-400 transition duration-300 no-underline"
+              >
+                Settings
+              </Link>
+              <button
+                onClick={logout}
+                className="bg-red-500 hover:bg-red-700 px-4 py-2 rounded-lg transition duration-300 text-white cursor-pointer"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="bg-teal-500 hover:bg-teal-700 px-4 py-2 rounded-lg transition duration-300 text-white no-underline"
+            >
+              Login
+            </Link>
+          )}
+        </div>
+      </header>
+    );
   };
 
   return <>{headerItem()}</>;

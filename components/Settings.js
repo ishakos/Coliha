@@ -6,37 +6,27 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
-  listAll,
-  getMetadata,
   deleteObject,
+  getMetadata,
+  listAll,
 } from "firebase/storage";
 import { storage } from "../firebase";
 
 export default function Settings() {
-  //imageUrl = current visible profile pic on UI
   const { user, domain } = AuthContext();
   const { imageUrl, setImageUrl, pfpLoading } = ProfilePicContext();
-  //passwords inputs
   const [newPass, setNewPass] = useState("");
   const [newPass2, setNewPass2] = useState("");
-  //token/keys inputs
   const [zrkey, setZrKey] = useState(user.zrkey);
   const [zrtoken, setZrToken] = useState(user.zrtoken);
   const [yalidinekey, setYalidineKey] = useState(user.yalidinekey);
   const [yalidinetoken, setYalidineToken] = useState(user.yalidinetoken);
-  //error message
   const [error, setError] = useState("");
-  //delete account button
   const [deleteAcc, setDeleteAcc] = useState(false);
-  //to see if user can send another email verification request
   const [secondRequest, setSecondRequest] = useState(null);
-  //image input
   const [imageUpload, setImageUpload] = useState(null);
-  //new profile pic preview
   const [previewUrl, setPreviewUrl] = useState(null);
-  //when image is being uploaded into firebase
   const [uploading, setUploading] = useState(false);
-  //to reset image input value to null
   const fileInputRef = useRef(null);
   const router = useRouter();
 
@@ -47,7 +37,7 @@ export default function Settings() {
     } else {
       setSecondRequest(false);
     }
-  }, []);
+  }, [user.secondEVR]);
 
   //reset the error message
   useEffect(() => {
@@ -322,7 +312,7 @@ export default function Settings() {
   };
 
   return (
-    <>
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
       <UserData user={user} />
       <SecondVerification
         user={user}
@@ -370,32 +360,26 @@ export default function Settings() {
         setDeleteAcc={setDeleteAcc}
         deleteSheet={deleteSheet}
       />
-    </>
+    </div>
   );
 }
 
 function UserData({ user }) {
-  //to tell unverified users how much time left until the account is deleted
-  //or to tell subscribers how much time left for their current payed offer
-  const deletionDate = new Date(user.createdAt);
-  deletionDate.setMonth(deletionDate.getMonth() + 1);
   return (
-    <div>
-      <p>
-        Username : <span>{user.username}</span>
+    <div className="mb-4 p-4 bg-gray-100 rounded-lg">
+      <p className="font-semibold">
+        Username: <span className="text-gray-700">{user.username}</span>
       </p>
-      <p>
-        Email :
-        <span>
-          {`${user.email.split("@")[0][0]}${user.email.split("@")[0][1]}*****@${
-            user.email.split("@")[1]
-          }`}
+      <p className="font-semibold">
+        Email:
+        <span className="text-gray-700">
+          {" "}
+          {user.email.replace(/(.{2}).*(@.*)/, "$1*****$2")}
         </span>
-        <span>{user.verified ? " (Verified)" : " (Not Verified)"}</span>
+        <span className={user.verified ? "text-green-500" : "text-red-500"}>
+          {user.verified ? " (Verified)" : " (Not Verified)"}
+        </span>
       </p>
-      {user.verified
-        ? ""
-        : `Your account will be deleted on: ${deletionDate.toLocaleString()}`}
     </div>
   );
 }
@@ -406,9 +390,16 @@ function SecondVerification({ user, secondRequest, onRequest }) {
       {user.verified ? (
         <></>
       ) : secondRequest ? (
-        <button onClick={onRequest}>Send one last request</button>
+        <button
+          onClick={onRequest}
+          className="mt-3 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+        >
+          Send one last request
+        </button>
       ) : (
-        "Check your mail to verify your account"
+        <p className="text-gray-600 mt-3">
+          Check your mail to verify your account
+        </p>
       )}
     </>
   );
@@ -416,149 +407,149 @@ function SecondVerification({ user, secondRequest, onRequest }) {
 
 function ResetPasswordForm({ setNewPass, setNewPass2, reset, error }) {
   return (
-    <div>
+    <div className="p-4 bg-gray-100 rounded-lg">
       <input
         type="password"
-        placeholder="enter your new password"
-        required
-        minLength="3"
-        onChange={(event) => {
-          setNewPass(event.target.value);
-        }}
+        placeholder="Enter new password"
+        className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        onChange={(e) => setNewPass(e.target.value)}
       />
       <input
         type="password"
-        placeholder="re-enter your new password"
-        required
-        minLength="3"
-        onChange={(event) => {
-          setNewPass2(event.target.value);
-        }}
+        placeholder="Re-enter new password"
+        className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        onChange={(e) => setNewPass2(e.target.value)}
       />
-      <button type="submit" onClick={reset}>
+      <button
+        className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        onClick={reset}
+      >
         Reset Password
       </button>
-      <p>{error}</p>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 }
 
 function ProfilePic({ imageUrl, pfpLoading, previewUrl }) {
   return (
-    <>
+    <div className="flex justify-center mt-4">
       {pfpLoading ? (
-        <p>Image Loading...</p>
+        <p className="text-gray-500">Image Loading...</p>
       ) : (
         <div
-          style={{
-            backgroundImage: previewUrl
-              ? `url(${previewUrl})`
-              : `url(${imageUrl})`,
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "50% 50%",
-            width: "60px", // Add width and height to see the background image
-            height: "60px",
-            borderRadius: "100%",
-          }}
+          className="w-20 h-20 rounded-full bg-cover bg-center shadow-md"
+          style={{ backgroundImage: `url(${previewUrl || imageUrl})` }}
         ></div>
       )}
-    </>
+    </div>
   );
 }
 
 function UpdateProfilePic({
-  user,
   fileInputRef,
   uploading,
-  imageUpload,
   setPreviewUrl,
   setImageUpload,
   uploadFile,
   deleteImage,
 }) {
-  const containerStyles = {
-    opacity: uploading ? 0.6 : 1,
-    pointerEvents: uploading ? "none" : "auto",
-  };
   return (
-    <div style={containerStyles}>
+    <div className="p-4 bg-gray-100 rounded-lg mt-4">
       <input
         type="file"
-        onChange={(event) => {
-          setImageUpload(event.target.files[0]);
-          setPreviewUrl(URL.createObjectURL(event.target.files[0]));
+        className="w-full p-2 border rounded-md focus:outline-none"
+        onChange={(e) => {
+          setImageUpload(e.target.files[0]);
+          setPreviewUrl(URL.createObjectURL(e.target.files[0]));
         }}
         ref={fileInputRef}
       />
-      {imageUpload ? (
-        <div>
-          <button onClick={uploadFile}>Save Image</button>
-          <button
-            onClick={() => {
-              setImageUpload(null);
-              setPreviewUrl(null);
-              fileInputRef.current.value = "";
-            }}
-          >
-            Cancel
-          </button>
-        </div>
-      ) : (
-        <></>
-      )}
-      {user.pfp ? <button onClick={deleteImage}>Delete image</button> : <></>}
+      <div className="flex gap-2 mt-2">
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          onClick={uploadFile}
+        >
+          Save Image
+        </button>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          onClick={() => {
+            setImageUpload(null);
+            setPreviewUrl(null);
+            fileInputRef.current.value = "";
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+      <button
+        className="mt-3 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+        onClick={deleteImage}
+      >
+        Delete Image
+      </button>
     </div>
   );
 }
 
-function DeleteAccountButton({ setDeleteAcc, deleteAcc, deleteSheet }) {
+function DeleteAccountButton({ deleteAcc, setDeleteAcc, deleteSheet }) {
   return (
-    <>
-      <button onClick={() => setDeleteAcc((deleteAcc) => !deleteAcc)}>
+    <div className="p-4 bg-gray-100 rounded-lg mt-4">
+      <button
+        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        onClick={() => setDeleteAcc(!deleteAcc)}
+      >
         Delete Account?
       </button>
-      {deleteAcc ? (
-        <>
-          <button onClick={() => setDeleteAcc((deleteAcc) => !deleteAcc)}>
-            no
+      {deleteAcc && (
+        <div className="mt-3">
+          <button
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+            onClick={() => setDeleteAcc(false)}
+          >
+            No
           </button>
-          <button type="submit" onClick={deleteSheet}>
-            yes
+          <button
+            className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 ml-2"
+            onClick={deleteSheet}
+          >
+            Yes
           </button>
-        </>
-      ) : (
-        <></>
+        </div>
       )}
-    </>
+    </div>
   );
 }
 
 function UpdateZrForm({ zrkey, zrtoken, setZrKey, setZrToken, updateZr }) {
   return (
-    <div>
+    <div className="p-4 bg-gray-100 rounded-lg mt-4">
       <input
         value={zrkey}
-        placeholder="enter your zr key"
+        placeholder="Enter your ZR key"
         required
-        onChange={(event) => {
-          setZrKey(event.target.value);
-        }}
+        className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        onChange={(event) => setZrKey(event.target.value)}
       />
       <input
         value={zrtoken}
-        placeholder="enter your zr token"
+        placeholder="Enter your ZR token"
         required
-        onChange={(event) => {
-          setZrToken(event.target.value);
-        }}
+        className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        onChange={(event) => setZrToken(event.target.value)}
       />
-      <button type="submit" onClick={updateZr}>
-        Update Zr Tokens
+      <button
+        type="submit"
+        onClick={updateZr}
+        className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        Update ZR Tokens
       </button>
     </div>
   );
 }
+
 function UpdateYalidineForm({
   yalidinekey,
   yalidinetoken,
@@ -567,24 +558,26 @@ function UpdateYalidineForm({
   updateYalidine,
 }) {
   return (
-    <div>
+    <div className="p-4 bg-gray-100 rounded-lg mt-4">
       <input
         value={yalidinekey}
-        placeholder="enter your yalidine key"
+        placeholder="Enter your Yalidine key"
         required
-        onChange={(event) => {
-          setYalidineKey(event.target.value);
-        }}
+        className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        onChange={(event) => setYalidineKey(event.target.value)}
       />
       <input
         value={yalidinetoken}
-        placeholder="enter your yalidine token"
+        placeholder="Enter your Yalidine token"
         required
-        onChange={(event) => {
-          setYalidineToken(event.target.value);
-        }}
+        className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        onChange={(event) => setYalidineToken(event.target.value)}
       />
-      <button type="submit" onClick={updateYalidine}>
+      <button
+        type="submit"
+        onClick={updateYalidine}
+        className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
         Update Yalidine Tokens
       </button>
     </div>

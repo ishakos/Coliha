@@ -1,23 +1,11 @@
+import React, { useState, useEffect } from "react";
 import { AuthContext } from "@/context/AuthContext";
-import { useState } from "react";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 export default function Dashboard() {
   const { purchasedOffer, user, orders, setOrders, domain } = AuthContext();
-
-  const [sendingRequest, setSendingRequest] = useState(false);
-  const [disable, setDisable] = useState(false);
-
-  const containerStyles = {
-    opacity: sendingRequest ? 0.6 : 1,
-    pointerEvents: sendingRequest ? "none" : "auto",
-  };
-  const disableStyles = {
-    opacity: disable ? 0.6 : 1,
-    pointerEvents: disable ? "none" : "auto",
-  };
 
   function getRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -131,10 +119,10 @@ export default function Dashboard() {
     return orders;
   }
 
+
   //delete order
   const onDeleteOrder = (row) => {
     if (!row) return;
-    //setSendingRequest(true);
     axios
       .post(
         `${domain}/orders/deleterow/`,
@@ -158,18 +146,15 @@ export default function Dashboard() {
         }
         if (response.data.deleted) {
           //update the ui
-          window.location.reload();
         } else {
-          window.location.reload();
+          alert("Deletion failed");
         }
-        //setSendingRequest(false);
       });
   };
-
+  /*
   const onSubmit = (data) => {
     const newData = Object.values(data);
     const row = newData.pop();
-    setSendingRequest(true);
     axios
       .post(
         `${domain}/orders/update/`,
@@ -191,18 +176,20 @@ export default function Dashboard() {
           localStorage.clear();
         }
         if (response.data.updated) {
-          window.location.reload();
+          //update ui
         } else {
-          window.location.reload();
+          alert("Update failed");
         }
-        //setSendingRequest(false);
-        //setDisable(false);
       });
+  };
+  */
+
+  const onSaveClicked = (formData) => {
+    console.log("Submitted Data:", formData);
   };
 
   //generate data
   const onGenerate = () => {
-    setSendingRequest(true);
     let generatedValues = generateRandomOrders();
     axios
       .post(
@@ -228,644 +215,408 @@ export default function Dashboard() {
         } else {
           window.location.reload();
         }
-        setSendingRequest(false);
       });
   };
 
-  return (
-    <div className="dashboard-page">
-      {user.verified ? (
-        <>
-          {Object.keys(purchasedOffer).length !== 0 ? (
-            <DashboardMain
-              purchasedOffer={purchasedOffer}
-              user={user}
-              orders={orders}
-              containerStyles={containerStyles}
-              disableStyles={disableStyles}
-              onDeleteOrder={onDeleteOrder}
-              onSubmit={onSubmit}
-              onGenerate={onGenerate}
-              setDisable={setDisable}
-              setOrders={setOrders}
-              setSendingRequest={setSendingRequest}
-              domain={domain}
-            />
-          ) : (
-            <p>
-              Your subscription has expired, please buy another one if you wish
-              to use our features again
-            </p>
-          )}
-        </>
-      ) : (
-        <p>You need to verifiy your email, no Link? re-send in settings</p>
-      )}
-    </div>
-  );
-}
-
-function DashboardMain({
-  purchasedOffer,
-  user,
-  orders,
-  containerStyles,
-  disableStyles,
-  onDeleteOrder,
-  onSubmit,
-  onGenerate,
-  setDisable,
-  setOrders,
-  setSendingRequest,
-  domain,
-}) {
-  const expirationDate = new Date(user.purchasedOffer.EndsAt);
-  const [create, setCreate] = useState(false);
-  //create data
-  const onCreateProduct = (data) => {
-    setSendingRequest(true);
-    const newData = Object.values(data);
-    const row = newData.pop();
-    const date = newData.pop();
-    let currentDate = new Date();
-    let isoString = currentDate.toISOString();
-    let formattedDate = isoString.split("T")[0];
-    newData.push(formattedDate);
-    axios
-      .post(
-        `${domain}/orders/create/`,
-        {
-          sheetID: user.sheetID,
-          values: newData,
-        },
-        {
-          headers: {
-            accessToken: localStorage.getItem("accessToken"),
-          },
-        }
-      )
-      .then((response) => {
-        if (response.data.noToken) {
-          router.push("/unwanted-page");
-          sessionStorage.clear();
-          localStorage.clear();
-        }
-        if (response.data.generated) {
-          setOrders((prev) => [...prev, newData]);
-        } else {
-          window.location.reload();
-        }
-        setCreate(false);
-        setSendingRequest(false);
-      });
-  };
   return (
     <>
-      <p>i have {purchasedOffer.title}</p>{" "}
-      <p>{`Your ${
-        purchasedOffer.title
-      } will be expired on: ${expirationDate.toLocaleString()}`}</p>
-      <div>
-        <button
-          onClick={() => {
-            setCreate((create) => !create);
-          }}
-        >
-          Create Order
-        </button>
-        <button onClick={onGenerate}>Generate</button>
-        <h1>Orders</h1>
-        {create ? (
-          <div style={containerStyles}>
-            <OrderForm
-              orders={[]}
-              order={[]}
-              row={""}
-              user={""}
-              setEdit={() => {}}
-              onSubmit={onCreateProduct}
-              setDisable={() => {}}
-              containerStyles={{}}
-            ></OrderForm>
-            <button
-              type="button"
-              onClick={() => {
-                setCreate(false);
-                setDisable(false);
-              }}
-            >
-              Cancel Edit
-            </button>
-          </div>
-        ) : (
-          <table border="1">
-            <thead>
-              <tr>
-                <th>Store</th>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Client</th>
-                <th>City</th>
-                <th>Commune</th>
-                <th>Delivery Type</th>
-                <th>Phone</th>
-                <th>Phone2</th>
-                <th>insurance</th>
-                <th>State</th>
-                <th>ID</th>
-                <th>Exchange</th>
-                <th>Address</th>
-                <th>Note</th>
-                <th>From</th>
-                <th>Declared</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            {orders?.map((order, index) => {
-              return (
-                <Order
-                  key={index + 1}
-                  row={index + 1}
+      <div className="container mx-auto p-6">
+        {user.verified ? (
+          <>
+            {Object.keys(purchasedOffer).length !== 0 ? (
+              <>
+                <p className="text-lg font-semibold text-gray-800">
+                  You have {purchasedOffer.title}
+                </p>
+                <h1 className="text-2xl font-bold mb-4">Orders Management</h1>
+                <OrdersTable
                   orders={orders}
-                  order={order}
+                  setOrders={setOrders}
+                  onGenerate={onGenerate}
                   onDeleteOrder={onDeleteOrder}
-                  containerStyles={containerStyles}
-                  disableStyles={disableStyles}
-                  onSubmit={onSubmit}
-                  user={user}
-                  setDisable={setDisable}
+                  onSaveClicked={onSaveClicked}
                 />
-              );
-            })}
-          </table>
+              </>
+            ) : (
+              <p className="text-red-600 text-center mt-5">
+                Your subscription has expired, please buy another one if you
+                wish to use our features again
+              </p>
+            )}
+          </>
+        ) : (
+          <p className="text-yellow-500 text-center mt-5">
+            You need to verify your email. No Link? Re-send in settings.
+          </p>
         )}
       </div>
     </>
   );
 }
 
-function Order({
+function OrdersTable({
   orders,
-  order,
+  setOrders,
+  onGenerate,
   onDeleteOrder,
-  row,
-  containerStyles,
-  disableStyles,
-  user,
-  setDisable,
-  onSubmit,
+  onSaveClicked,
 }) {
-  const [edit, setEdit] = useState(false);
-  return edit ? (
-    <tbody className="order-edit-form" style={containerStyles}>
-      <tr>
-        <td>
-          <OrderForm
-            orders={orders}
-            order={order}
-            row={row}
-            user={user}
-            setEdit={setEdit}
-            onSubmit={onSubmit}
-            setDisable={setDisable}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              setEdit(false);
-              setDisable(false);
-            }}
-          >
-            Cancel Edit
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  ) : (
-    <>
-      <tbody style={{ ...containerStyles, ...disableStyles }}>
-        <tr>
-          {order?.map((column, i) => (
-            <td key={i}>{column}</td>
-          ))}
-          <td key={-1}>
-            <button
-              onClick={() => {
-                setEdit((edit) => !edit);
-                setDisable(true);
-              }}
-            >
-              Edit
-            </button>
-            <DeleteOrderButton onDeleteOrder={onDeleteOrder} row={row} />
-          </td>
-        </tr>
-      </tbody>
-    </>
-  );
-}
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [expandedRow, setExpandedRow] = useState(null);
+  const [editValues, setEditValues] = useState(null);
+  const [creating, setCreating] = useState(false);
 
-function OrderForm({ order, row, user, setEdit, setDisable, onSubmit }) {
-  const [store, setStore] = useState(order[0] || "");
-  const [product, setProduct] = useState(order[1] || "");
-  const [quantity, setQuantity] = useState(order[2] || "");
-  const [price, setPrice] = useState(order[3] || "");
-  const [client, setClient] = useState(order[4] || "");
-  const [city, setCity] = useState(order[5] || "");
-  const [commune, setCommune] = useState(order[6] || "");
-  const [dtype, setDtype] = useState(order[7] || "");
-  const [phone, setPhone] = useState(order[8] || "");
-  const [phone2, setPhone2] = useState(order[9] || "");
-  const [insurance, setInsurance] = useState(order[10] || "");
-  const [statue, setStatue] = useState(order[11] || "");
-  const [id, setId] = useState(order[12] || "");
-  const [exchange, setExchange] = useState(order[13] || "");
-  const [address, setAddress] = useState(order[14] || "");
-  const [note, setNote] = useState(order[15] || "");
-  const [from, setFrom] = useState(user.city || "");
-  const [declared, setDeclared] = useState(order[17] || "");
-  const [date, setDate] = useState(order[18] || "");
-
-  const initialValues = {
-    store: store,
-    product: product,
-    quantity: quantity,
-    price: price,
-    client: client,
-    city: city,
-    commune: commune,
-    dtype: dtype,
-    phone: phone,
-    phone2: phone2,
-    insurance: insurance,
-    statue: statue,
-    id: id,
-    exchange: exchange,
-    address: address,
-    note: note,
-    from: from,
-    declared: declared,
-    date: date,
-    row: row,
+  const handleDelete = (index) => {
+    setOrders((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const validationSchema = Yup.object().shape({
-    product: Yup.string().required("Product is required"),
-    quantity: Yup.number()
-      .typeError("Quantity must be a number")
-      .integer("Quantity must be a whole number")
-      .min(1, "Quantity must be at least 1")
-      .max(15, "Quantity cannot exceed 15")
-      .required("Quantity is required"),
-    price: Yup.number()
-      .typeError("Price must be a number")
-      .integer("Price must be a whole number")
-      .min(400, "Price must be at least 400")
-      .required("Price is required"),
-    client: Yup.string().required("Client name is required").min(3).max(30),
-    city: Yup.string()
-      .oneOf([
-        "Algiers",
-        "Oran",
-        "Constantine",
-        "Annaba",
-        "Batna",
-        "Blida",
-        "Tlemcen",
-        "Bejaia",
-        "Setif",
-        "Biskra",
-        "Tiaret",
-        "Djelfa",
-        "Mostaganem",
-        "Skikda",
-        "Tizi Ouzou",
-        "Medea",
-        "Sidi Bel Abbes",
-        "El Oued",
-        "Ghardaia",
-        "Ain Defla",
-        "Relizane",
-        "Tamanrasset",
-        "Mascara",
-        "Khenchela",
-        "Jijel",
-        "Ouargla",
-        "Saida",
-        "Laghouat",
-        "Msila",
-        "Bouira",
-        "Naama",
-        "Adrar",
-        "Illizi",
-        "El Bayadh",
-        "Boumerdes",
-        "Tindouf",
-        "Ain Temouchent",
-        "Guelma",
-        "Tissemsilt",
-        "Souk Ahras",
-        "Tipaza",
-        "Bordj Bou Arreridj",
-        "El Tarf",
-        "Ain Oussera",
-        "Tebessa",
-        "Mila",
-        "Oum El Bouaghi",
-        "El M'ghair",
-        "El Menia",
-        "Touggourt",
-        "Beni Abbes",
-        "Timimoun",
-        "Djanet",
-        "In Salah",
-        "In Guezzam",
-      ])
-      .required("Invalid City"),
-    commune: Yup.string()
-      .oneOf([
-        "Alger",
-        "Oran",
-        "Constantine",
-        "Annaba",
-        "Batna",
-        "Blida",
-        "Tlemcen",
-        "Béjaïa",
-        "Sétif",
-        "Biskra",
-        "Tiaret",
-        "Djelfa",
-        "Mostaganem",
-        "Skikda",
-        "Tizi Ouzou",
-        "Médéa",
-        "Sidi Bel Abbès",
-        "El Oued",
-        "Ghardaïa",
-        "Aïn Defla",
-        "Relizane",
-        "Tamanrasset",
-        "Mascara",
-        "Khenchela",
-        "Jijel",
-        "Ouargla",
-        "Saïda",
-        "Laghouat",
-        "M'Sila",
-        "Bouira",
-        "Naâma",
-        "Adrar",
-        "Illizi",
-        "El Bayadh",
-        "Boumerdès",
-        "Tindouf",
-        "Aïn Témouchent",
-        "Guelma",
-        "Tissemsilt",
-        "Souk Ahras",
-        "Tipaza",
-        "Bordj Bou Arréridj",
-        "El Tarf",
-        "Tébessa",
-        "Mila",
-        "Oum El Bouaghi",
-        "El M'Ghair",
-        "El Menia",
-        "Touggourt",
-        "Béni Abbès",
-        "Timimoun",
-        "Djanet",
-        "In Salah",
-        "In Guezzam",
-      ])
-      .required("Invalid Commune"),
-    dtype: Yup.string()
-      .oneOf(["Stopdesk", "Domicile"], "Invalid delivery type")
-      .required("Delivery type is required"),
-    phone: Yup.string()
-      .matches(
-        /^\+213\d{9}$/, // +213 followed by exactly 9 digits
-        "Phone number must be in +213XXXXXXXXX format"
-      )
-      .required("Phone number is required"),
-    phone2: Yup.string()
-      .matches(
-        /^\+213\d{9}$/, // +213 followed by exactly 9 digits
-        "Phone number must be in +213XXXXXXXXX format"
-      )
-      .required("Phone number is required"),
-    insurance: Yup.string()
-      .oneOf(["1", "0"], "Insurance must be 1 or 0")
-      .required("Insurance is required"),
-    statue: Yup.string()
-      .oneOf(
-        ["Confirmed", "Non Confirmed", "Canceled", "Onship"],
-        "Invalid status"
-      )
-      .required("Status is required"),
-    exchange: Yup.string()
-      .oneOf(["1", "0"], "Exchange must be 1 or 0")
-      .required("Exchange is required"),
-    address: Yup.string().required("Address is required").min(3).max(30),
-    from: Yup.string()
-      .oneOf([
-        "Algiers",
-        "Oran",
-        "Constantine",
-        "Annaba",
-        "Batna",
-        "Blida",
-        "Tlemcen",
-        "Bejaia",
-        "Setif",
-        "Biskra",
-        "Tiaret",
-        "Djelfa",
-        "Mostaganem",
-        "Skikda",
-        "Tizi Ouzou",
-        "Medea",
-        "Sidi Bel Abbes",
-        "El Oued",
-        "Ghardaia",
-        "Ain Defla",
-        "Relizane",
-        "Tamanrasset",
-        "Mascara",
-        "Khenchela",
-        "Jijel",
-        "Ouargla",
-        "Saida",
-        "Laghouat",
-        "Msila",
-        "Bouira",
-        "Naama",
-        "Adrar",
-        "Illizi",
-        "El Bayadh",
-        "Boumerdes",
-        "Tindouf",
-        "Ain Temouchent",
-        "Guelma",
-        "Tissemsilt",
-        "Souk Ahras",
-        "Tipaza",
-        "Bordj Bou Arreridj",
-        "El Tarf",
-        "Ain Oussera",
-        "Tebessa",
-        "Mila",
-        "Oum El Bouaghi",
-        "El M'ghair",
-        "El Menia",
-        "Touggourt",
-        "Beni Abbes",
-        "Timimoun",
-        "Djanet",
-        "In Salah",
-        "In Guezzam",
-      ])
-      .required("Invalid City"),
-    declared: Yup.string()
-      .matches(/^\d+$/, "Declared amount must be a positive number") // Only digits
-      .required("Declared amount is required")
-      .min(1, "Declared amount must be positive"),
-  });
-
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      validateOnChange={false}
-      onSubmit={onSubmit}
-    >
-      {(formik) => (
-        <Form>
-          <Input type={"store"} value={store} set={setStore} disabled={true} />
-          <Input
-            type={"product"}
-            value={product}
-            set={setProduct}
-            formik={formik}
-          />
-          <Input
-            type={"quantity"}
-            value={quantity}
-            set={setQuantity}
-            formik={formik}
-          />
-          <Input type={"price"} value={price} set={setPrice} formik={formik} />
-          <Input
-            type={"client"}
-            value={client}
-            set={setClient}
-            formik={formik}
-          />
-          <Input type={"city"} value={city} set={setCity} formik={formik} />
-          <Input
-            type={"commune"}
-            value={commune}
-            set={setCommune}
-            formik={formik}
-          />
-          <Input type={"dtype"} value={dtype} set={setDtype} formik={formik} />
-          <Input type={"phone"} value={phone} set={setPhone} formik={formik} />
-          <Input
-            type={"phone2"}
-            value={phone2}
-            set={setPhone2}
-            formik={formik}
-          />
-          <Input
-            type={"insurance"}
-            value={insurance}
-            set={setInsurance}
-            formik={formik}
-          />
-          <Input
-            type={"statue"}
-            value={statue}
-            set={setStatue}
-            formik={formik}
-          />
-          <Input type={"id"} value={id} set={setId} formik={formik} />
-          <Input
-            type={"exchange"}
-            value={exchange}
-            set={setExchange}
-            formik={formik}
-          />
-          <Input
-            type={"address"}
-            value={address}
-            set={setAddress}
-            formik={formik}
-          />
-          <Input type={"note"} value={note} set={setNote} formik={formik} />
-          <Input type={"from"} value={from} set={setFrom} formik={formik} />
-          <Input
-            type={"declared"}
-            value={declared}
-            set={setDeclared}
-            formik={formik}
-          />
-          <Input
-            type={"date"}
-            value={date}
-            set={setDate}
-            disabled={true}
-            formik={formik}
-          />
-          <button type="submit">Save</button>
-        </Form>
+    <div className="p-6">
+      <button
+        className="mb-4 mr-4 px-4 py-2 bg-green-500 text-white rounded cursor-pointer"
+        onClick={onGenerate}
+      >
+        Generate
+      </button>
+
+      <button
+        className="mb-4 px-4 py-2 bg-green-500 text-white rounded cursor-pointer"
+        onClick={() => setCreating(true)}
+      >
+        + Create Order
+      </button>
+
+      {creating && (
+        <OrderForm
+          onSubmit={(newOrder) => {
+            onSaveClicked(newOrder);
+            setOrders((prev) => [...prev, newOrder]);
+            setCreating(false);
+          }}
+          onCancel={() => setCreating(false)}
+        />
       )}
-    </Formik>
-  );
-}
 
-function Input({ type, value, set, disabled, formik }) {
-  return (
-    <div className="login-form">
-      <ErrorMessage name={type} component="span" />
-      <Field
-        disabled={disabled}
-        autoComplete="off"
-        id={`unique-${type}`}
-        placeholder={`Put your ${type}...`}
-        type={`${type}`}
-        value={`${value}`}
-        name={`${type}`}
-        onChange={(event) => {
-          formik.handleChange(event);
-          set(event.target.value);
-        }}
-      />
+      <table className="w-full border-collapse border border-gray-200">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border p-2">Product</th>
+            <th className="border p-2">Quantity</th>
+            <th className="border p-2">Price</th>
+            <th className="border p-2">Client</th>
+            <th className="border p-2">City</th>
+            <th className="border p-2">Delivery</th>
+            <th className="border p-2">Phone</th>
+            <th className="border p-2">Note</th>
+            <th className="border p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order, index) => (
+            <React.Fragment key={index}>
+              {/* EDIT FORM */}
+              {editingIndex === index ? (
+                <tr>
+                  <td colSpan="9" className="border p-2">
+                    <OrderForm
+                      initialValues={editValues} // Pass selected order values
+                      onSubmit={(updatedOrder) => {
+                        setOrders((prev) =>
+                          prev.map((o, i) => (i === index ? updatedOrder : o))
+                        );
+                        setEditingIndex(null);
+                      }}
+                      onCancel={() => setEditingIndex(null)}
+                    />
+                  </td>
+                </tr>
+              ) : (
+                <>
+                  {/* MAIN ORDER ROW */}
+                  <tr className="border">
+                    <td className="border p-2">{order[1]}</td>
+                    <td className="border p-2">{order[2]}</td>
+                    <td className="border p-2">{order[3]}</td>
+                    <td className="border p-2">{order[4]}</td>
+                    <td className="border p-2">{order[5]}</td>
+                    <td className="border p-2">{order[7]}</td>
+                    <td className="border p-2">{order[8]}</td>
+                    <td className="border p-2">{order[15]}</td>
+                    <td className="border p-2 flex gap-2">
+                      <button
+                        className="px-2 py-1 bg-blue-500 text-white rounded"
+                        onClick={() => {
+                          setEditingIndex(index);
+                          setEditValues(order); // Store the selected order
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="px-2 py-1 bg-red-500 text-white rounded"
+                        onClick={() => {
+                          handleDelete(index);
+                          onDeleteOrder(index + 1);
+                        }}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        className="px-2 py-1 bg-gray-500 text-white rounded"
+                        onClick={() =>
+                          setExpandedRow(expandedRow === index ? null : index)
+                        }
+                      >
+                        {expandedRow === index ? "Hide" : "Show More"}
+                      </button>
+                    </td>
+                  </tr>
+
+                  {/* EXPANDED DETAILS */}
+                  {expandedRow === index && (
+                    <tr>
+                      <td colSpan="9" className="border p-2 bg-gray-100">
+                        <p>
+                          <strong>Commune:</strong> {order[6]}
+                        </p>
+                        <p>
+                          <strong>Delivery Type:</strong> {order[7]}
+                        </p>
+                        <p>
+                          <strong>Phone:</strong> {order[8]}
+                        </p>
+                        <p>
+                          <strong>Phone2:</strong> {order[9]}
+                        </p>
+                        <p>
+                          <strong>Insurance:</strong> {order[10]}
+                        </p>
+                        <p>
+                          <strong>Status:</strong> {order[11]}
+                        </p>
+                        <p>
+                          <strong>ID:</strong> {order[12]}
+                        </p>
+                        <p>
+                          <strong>Exchange:</strong> {order[13]}
+                        </p>
+                        <p>
+                          <strong>Address:</strong> {order[14]}
+                        </p>
+                        <p>
+                          <strong>Note:</strong> {order[15]}
+                        </p>
+                        <p>
+                          <strong>From:</strong> {order[16]}
+                        </p>
+                        <p>
+                          <strong>Declared:</strong> {order[17]}
+                        </p>
+                        <p>
+                          <strong>Date:</strong> {order[18]}
+                        </p>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              )}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
 
-function DeleteOrderButton({ onDeleteOrder, row }) {
-  const [deleteOrder, setDeleteOrder] = useState(false);
+function OrderForm({ initialValues, onSubmit, onCancel }) {
+  const [formValues, setFormValues] = useState(
+    initialValues || Array(19).fill("") // Default to empty array if no values
+  );
+  const getCurrentDate = () => new Date().toISOString().split("T")[0];
+
+  // Set default values on mount (only for new orders)
+  useEffect(() => {
+    if (!initialValues) {
+      setFormValues((prev) => {
+        const updated = [...prev];
+        updated[0] = "Foorweb";
+        updated[18] = getCurrentDate(); // Set current date
+        return updated;
+      });
+    } else {
+      setFormValues(initialValues);
+    }
+  }, [initialValues]);
+
+  const handleChange = (index, value) => {
+    setFormValues((prev) => {
+      const updated = [...prev];
+      updated[index] = value;
+      return updated;
+    });
+  };
+
   return (
-    <>
-      {deleteOrder ? (
-        <>
-          <button onClick={() => setDeleteOrder((deleteOrder) => !deleteOrder)}>
-            Cancel Delete
-          </button>
-          <button
-            onClick={() => {
-              onDeleteOrder(row);
-            }}
-          >
-            Confirm Delete
-          </button>
-        </>
-      ) : (
-        <button onClick={() => setDeleteOrder(() => true)}>Delete Order</button>
-      )}
-    </>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(formValues);
+      }}
+      className="flex flex-col gap-2 p-4 bg-gray-100 border rounded"
+    >
+      {/* Store (Read-Only) */}
+      <input
+        type="text"
+        placeholder="Store"
+        value={formValues[0]}
+        disabled
+        className="border p-2 bg-gray-200"
+      />
+
+      <input
+        type="text"
+        placeholder="Product"
+        value={formValues[1]}
+        onChange={(e) => handleChange(1, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="number"
+        placeholder="Quantity"
+        value={formValues[2]}
+        onChange={(e) => handleChange(2, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="number"
+        placeholder="Price"
+        value={formValues[3]}
+        onChange={(e) => handleChange(3, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Client"
+        value={formValues[4]}
+        onChange={(e) => handleChange(4, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="City"
+        value={formValues[5]}
+        onChange={(e) => handleChange(5, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Commune"
+        value={formValues[6]}
+        onChange={(e) => handleChange(6, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Delivery Type"
+        value={formValues[7]}
+        onChange={(e) => handleChange(7, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Phone"
+        value={formValues[8]}
+        onChange={(e) => handleChange(8, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Phone 2"
+        value={formValues[9]}
+        onChange={(e) => handleChange(9, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="number"
+        placeholder="Insurance"
+        value={formValues[10]}
+        onChange={(e) => handleChange(10, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Status"
+        value={formValues[11]}
+        onChange={(e) => handleChange(11, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="ID"
+        value={formValues[12]}
+        onChange={(e) => handleChange(12, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="number"
+        placeholder="Exchange"
+        value={formValues[13]}
+        onChange={(e) => handleChange(13, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Address"
+        value={formValues[14]}
+        onChange={(e) => handleChange(14, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Note"
+        value={formValues[15]}
+        onChange={(e) => handleChange(15, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="From"
+        value={formValues[16]}
+        onChange={(e) => handleChange(16, e.target.value)}
+        className="border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Declared"
+        value={formValues[17]}
+        onChange={(e) => handleChange(17, e.target.value)}
+        className="border p-2"
+      />
+
+      {/* Date (Read-Only) */}
+      <input
+        type="text"
+        placeholder="Date"
+        value={formValues[18]}
+        disabled
+        className="border p-2 bg-gray-200"
+      />
+
+      <div className="flex gap-2 mt-4">
+        <button
+          type="submit"
+          className="px-4 py-2 bg-green-500 text-white rounded"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          className="px-4 py-2 bg-gray-500 text-white rounded"
+          onClick={onCancel}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
   );
 }

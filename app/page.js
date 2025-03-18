@@ -9,14 +9,14 @@ export default function App() {
   useAuth();
 
   return (
-    <>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       {loading ? (
-        <p>Loading Screen...</p>
+        <p className="text-lg font-semibold text-gray-700">Loading Screen...</p>
       ) : !logged ? (
         <Home />
       ) : (
-        <p>Logging in...</p>
+        <p className="text-blue-600 text-lg font-semibold">Logging in...</p>
       )}
-    </>
+    </div>
   );
 }

@@ -39,16 +39,26 @@ export default function FeatureB() {
   };
 
   return (
-    <>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       {featuresLoading ? (
-        <p>Features Loading...</p>
+        <p className="text-lg font-semibold text-gray-700">
+          Features Loading...
+        </p>
       ) : authorized ? (
-        <div>
-          <button onClick={onFeature}>Feature B</button>
+        <div className="bg-white shadow-md rounded-lg p-6 text-center">
+          <h1 className="text-2xl font-bold text-green-600 mb-4">Feature B</h1>
+          <button
+            onClick={onFeature}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-300"
+          >
+            Use Feature B
+          </button>
         </div>
       ) : (
-        <p>Cant access this feature</p>
+        <p className="text-red-500 text-lg font-semibold">
+          You can not access this feature
+        </p>
       )}
-    </>
+    </div>
   );
 }
