@@ -1,23 +1,23 @@
 "use client";
 
-import FeatureA from "@/components/FeatureA";
-import { useAuth } from "@/hooks/useAuth";
-import { AuthContext } from "@/context/AuthContext";
+import FeatureA from "@/components/dashboard/FeatureA";
+import { useRedirect } from "@/hooks/useRedirect";
+import { AuthContext } from "@/context/authContext";
+import { useSubscribe } from "@/hooks/useSubscribe";
 
 export default function FeatureAPage() {
-  const { logged, loading } = AuthContext();
-  useAuth();
+  const { logged, loading } = AuthContext() || {};
+  useRedirect();
+  useSubscribe();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+    <div className="min-h-screen flex items-start justify-center bg-gray-100 p-6">
       {loading ? (
         <p className="text-lg font-semibold text-gray-700">Loading Screen...</p>
       ) : logged ? (
         <FeatureA />
       ) : (
-        <p className="text-red-500 text-lg font-semibold">
-          User not signed in, Logging out...
-        </p>
+        <p className="text-red-500 text-lg font-semibold">Logging out...</p>
       )}
     </div>
   );

@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "../../hooks/useAuth";
-import { AuthContext } from "../../context/AuthContext";
-import Settings from "@/components/Settings";
+import { useRedirect } from "../../hooks/useRedirect";
+import { AuthContext } from "../../context/authContext";
+import Settings from "@/components/settings/Settings";
 
 export default function SettingsPage() {
-  const { logged, loading } = AuthContext();
-  useAuth();
+  const { logged, loading } = AuthContext() || {};
+  useRedirect();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
@@ -15,9 +15,7 @@ export default function SettingsPage() {
       ) : logged ? (
         <Settings />
       ) : (
-        <p className="text-red-500 text-lg font-semibold">
-          User not signed in, logging out...
-        </p>
+        <p className="text-red-500 text-lg font-semibold">Logging out...</p>
       )}
     </div>
   );

@@ -1,26 +1,55 @@
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { AuthContext, SubscribeContext } from "../context/AuthContext";
+import { usePathname, useRouter } from "next/navigation";
+import { SubscribeContext } from "@/context/subscribeContext";
+import { AuthContext } from "@/context/authContext";
+import { toast } from "react-hot-toast";
+import { checkFeatureAccess, retry } from "@/lib/useSubscribeLogic";
 
 export function useSubscribe() {
-  const {  loading, purchasedOffer } = AuthContext();
-  const { setFeaturesLoading, setAuthorized } =
-    SubscribeContext();
-  const pathname = usePathname();
-  const router = useRouter();
+  const { loading, user, domain, setLogged } = AuthContext?.() ?? {};
+  const { setFeaturesPageLoading, setAuthorized } = SubscribeContext?.() ?? {};
+  const pathname = usePathname?.();
+  const router = useRouter?.();
 
   useEffect(() => {
-    setFeaturesLoading(true);
     if (loading) return;
-    const routes = pathname.split("/");
-    const currentPage = routes[routes.length - 1];
-    if (purchasedOffer?.features?.includes(currentPage)) {
-      setAuthorized(true);
-    } else {
-      router.push("/dashboard");
+    const onFeature = async () => {
+      setFeaturesPageLoading(true);
       setAuthorized(false);
-    }
-    setFeaturesLoading(false);
-  }, [loading, purchasedOffer]);
+      const currentPage = pathname.split("/").pop();
+      const offerId = user?.purchasedOffer?.offer;
+      try {
+        await retry(
+          () => checkFeatureAccess({ domain, currentPage, offerId }),
+          2,
+          1000,
+          () => {
+            setLogged(false);
+          }
+        );
+        setAuthorized(true);
+      } catch (err) {
+        if (err?.response?.status === 403) {
+          router.push("/no-access");
+        } else if (err?.response?.status === 500) {
+          toast.error("Something went wrong, reloading...");
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
+      } finally {
+        setFeaturesPageLoading(false);
+      }
+    };
+
+    onFeature();
+  }, [
+    loading,
+    domain,
+    pathname,
+    user?.purchasedOffer?.offer,
+    router,
+    setAuthorized,
+    setFeaturesPageLoading,
+  ]);
 }

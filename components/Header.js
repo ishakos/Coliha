@@ -1,25 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { AuthContext, ProfilePicContext } from "../context/AuthContext";
+import { AuthContext } from "@/context/authContext";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const { logged, loading, purchasedOffer, setOrders } = AuthContext();
-  const { imageUrl, pfpLoading } = ProfilePicContext();
+  const {
+    logged,
+    setLogged,
+    loading,
+    purchasedOffer,
+    setPurchasedOffer,
+    imageUrl,
+    setImageUrl,
+    setOrders,
+    setUser,
+  } = AuthContext();
   const pathname = usePathname();
   const router = useRouter();
 
   const logout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
+    localStorage.removeItem("accessToken");
+    setLogged(false);
+    setPurchasedOffer([]);
+    setImageUrl(null);
     setOrders([]);
-    router.push("/");
+    setUser({});
+    router.push("/login");
   };
 
+  // To load links of features when user is logged in
   const features = () => {
-    if (!purchasedOffer || loading) return null;
+    if (!purchasedOffer?.features || loading) return null;
     const featureNames = ["Feature A", "Feature B", "Feature C", "Feature D"];
 
     return (
@@ -33,12 +46,12 @@ export default function Header() {
             {featureNames[index]}
           </Link>
         ))}
-        {purchasedOffer.noAccess && (
+        {purchasedOffer?.noAccess && (
           <Link
             href="/no-access"
             className="text-white hover:text-teal-300 transition duration-300 no-underline"
           >
-            {purchasedOffer.noAccess}
+            {purchasedOffer?.noAccess}
           </Link>
         )}
       </div>
@@ -46,15 +59,19 @@ export default function Header() {
   };
 
   const headerItem = () => {
+    // No header for specific paths
     if (
       /^\/(email-verification|reset-password)\/[^\/]+\/[^\/]+$/.test(
         pathname
       ) ||
-      ["/forgot-password", "/reset-password"].includes(pathname)
+      ["/forgot-password", "/reset-password", "/unwanted-page"].includes(
+        pathname
+      )
     ) {
       return null;
     }
 
+    // if Loading, show a loading state
     if (loading) {
       return (
         <header className="text-center text-white py-4 bg-gray-800">
@@ -65,48 +82,53 @@ export default function Header() {
 
     return (
       <header className="bg-gray-900 text-white shadow-lg py-4 px-6 flex flex-col md:flex-row justify-between items-center border-b border-gray-700">
+        {/* Left side */}
         <div className="flex flex-wrap items-center gap-4">
+          {/* Home link */}
           <Link
             href={logged ? "/dashboard" : "/"}
             className="text-xl font-bold text-white hover:text-teal-400 transition duration-300 no-underline"
           >
-            {pathname === "/" ? "Home" : "Go Home"}
+            {logged ? "Dashboard" : "Home"}
           </Link>
+          {/* Load (features + Subscriptions) links if user is logged in */}
           {logged && (
-            <Link
-              href="/dashboard"
-              className="text-white hover:text-teal-400 transition duration-300 no-underline"
-            >
-              Dashboard
-            </Link>
-          )}
-          {logged && features()}
-          {logged && (
-            <Link
-              href="/subscriptions"
-              className="text-white hover:text-teal-400 transition duration-300 no-underline"
-            >
-              Subscriptions
-            </Link>
+            <>
+              {features()}
+              <Link
+                href="/subscriptions"
+                className="text-white hover:text-teal-400 transition duration-300 no-underline"
+              >
+                Subscriptions
+              </Link>
+            </>
           )}
         </div>
+        {/* Right side */}
         <div className="flex items-center gap-4 mt-4 md:mt-0">
           {logged ? (
             <>
-              {!pfpLoading ? (
+              {/* Profile picture */}
+              {imageUrl ? (
                 <div
                   className="w-12 h-12 bg-gray-400 rounded-full bg-cover bg-center border-2 border-white"
                   style={{ backgroundImage: `url(${imageUrl})` }}
                 ></div>
               ) : (
-                <p className="text-sm">Pfp loading...</p>
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-600 border-2 border-white text-xl font-bold">
+                  <span role="img" aria-label="User">
+                    👤
+                  </span>
+                </div>
               )}
+              {/* Settings link */}
               <Link
                 href="/settings"
                 className="text-white hover:text-teal-400 transition duration-300 no-underline"
               >
                 Settings
               </Link>
+              {/* Logout Button */}
               <button
                 onClick={logout}
                 className="bg-red-500 hover:bg-red-700 px-4 py-2 rounded-lg transition duration-300 text-white cursor-pointer"

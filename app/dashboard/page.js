@@ -1,12 +1,13 @@
 "use client";
 
-import { useAuth } from "../../hooks/useAuth";
-import { AuthContext } from "../../context/AuthContext";
-import Dashboard from "@/components/Dashboard";
+import { useRedirect } from "../../hooks/useRedirect";
+import { AuthContext } from "@/context/authContext";
+import Dashboard from "@/components/dashboard/Dashboard";
+import { useSubscribe } from "@/hooks/useSubscribe";
 
 export default function DashboardPage() {
-  const { logged, loading } = AuthContext();
-  useAuth();
+  const { logged, loading } = AuthContext() || {};
+  useRedirect();
 
   return (
     <div className="min-h-screen flex items-start justify-center bg-gray-100 p-6">
@@ -15,9 +16,7 @@ export default function DashboardPage() {
       ) : logged ? (
         <Dashboard />
       ) : (
-        <p className="text-red-500 text-lg font-semibold">
-          User not signed in, Logging out...
-        </p>
+        <p className="text-red-500 text-lg font-semibold">Logging out...</p>
       )}
     </div>
   );

@@ -1,11 +1,7 @@
 "use client";
 
-import ErrorPage from "@/components/ErrorPage";
+import Unwanted from "@/components/errorBoundary/Unwanted";
 
 export default function UnwantedPage() {
-  return (
-    <>
-      <ErrorPage />
-    </>
-  );
+  return <Unwanted />;
 }

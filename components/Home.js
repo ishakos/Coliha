@@ -5,14 +5,18 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="min-h-screen bg-gray-900 text-white">
-      {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center text-center py-20 px-6">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">
-          Welcome to Our Platform
+      <section className="flex flex-col items-center justify-center text-center py-15 px-6">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 ">
+          Welcome to <span className="font-extrabold">Coliha</span>!
         </h1>
+        <p className="text-2xl md:text-3xl font-bold text-teal-400 mb-4">
+          Manage Your Store Effortlessly
+        </p>
+
         <p className="text-lg md:text-xl text-gray-300 max-w-2xl">
-          Discover a seamless experience designed to make your life easier. Join
-          us today and explore amazing features.
+          The all-in-one dashboard for sellers. Easily manage your products and
+          send packages directly to shipping companies like ZR Express—no
+          hassle, just growth.
         </p>
         <div className="mt-6 flex space-x-4">
           <Link
@@ -30,27 +34,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-16 px-6">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">
-          Why Choose Us?
+          Why Use Our Platform?
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           {[
             {
-              title: "Fast & Secure",
+              title: "Centralized Product Management",
               description:
-                "Our platform ensures speed and security for a smooth experience.",
+                "Easily add, edit, and organize your Foorweb store products from one place.",
             },
             {
-              title: "User-Friendly",
+              title: "Seamless Shipping Integration",
               description:
-                "Designed with simplicity in mind, making navigation easy.",
+                "Send packages directly to shipping companies like ZR Express with just a few clicks.",
             },
             {
-              title: "24/7 Support",
+              title: "Time-Saving & Reliable",
               description:
-                "Our team is always here to help you with any issues or questions.",
+                "Automate repetitive tasks and focus on growing your business with our secure and user-friendly tools.",
             },
           ].map((feature, index) => (
             <div

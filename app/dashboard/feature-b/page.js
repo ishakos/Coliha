@@ -1,28 +1,24 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
-import { AuthContext } from "@/context/AuthContext";
-import FeatureB from "@/components/FeatureB";
+import { useRedirect } from "@/hooks/useRedirect";
+import { AuthContext } from "@/context/authContext";
+import FeatureB from "@/components/dashboard/FeatureB";
+import { useSubscribe } from "@/hooks/useSubscribe";
 
 export default function FeatureBPage() {
-  const { logged, loading } = AuthContext();
-  useAuth();
+  const { logged, loading } = AuthContext() || {};
+  useRedirect();
+  useSubscribe();
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center">
-      <div className="w-full max-w-4xl">
-        {loading ? (
-          <p className="text-lg font-semibold text-gray-700">
-            Loading Screen...
-          </p>
-        ) : logged ? (
-          <FeatureB />
-        ) : (
-          <p className="text-red-500 text-lg font-semibold">
-            User not signed in, Logging out...
-          </p>
-        )}
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      {loading ? (
+        <p className="text-lg font-semibold text-gray-700">Loading Screen...</p>
+      ) : logged ? (
+        <FeatureB />
+      ) : (
+        <p className="text-red-500 text-lg font-semibold">Logging out...</p>
+      )}
     </div>
   );
 }

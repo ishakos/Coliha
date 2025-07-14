@@ -1,10 +1,7 @@
 export const metadata = {
-  title: "Server Error",
+  title: "Unauthorized",
 };
 
-// dashboard/page.js
-import UnwantedPage from "./page";
-
-export default function UnwantedPageLayout() {
-  return <UnwantedPage />;
+export default function UnwantedPageLayout({ children }) {
+  return <>{children}</>;
 }

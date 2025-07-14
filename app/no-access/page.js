@@ -1,12 +1,12 @@
 "use client";
 
-import { AuthContext } from "@/context/AuthContext";
-import { useAuth } from "@/hooks/useAuth";
+import { AuthContext } from "@/context/authContext";
+import { useRedirect } from "@/hooks/useRedirect";
 import Link from "next/link";
 
 export default function NoAccessPage() {
-  const { loading, logged } = AuthContext();
-  useAuth();
+  const { loading, logged } = AuthContext() || {};
+  useRedirect();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 text-center p-6">
