@@ -86,7 +86,7 @@ It’s everything a seller needs to stay organized, save time, and get clear ins
 
 - ❌ **No TypeScript** (currently using JavaScript)
 - ❌ **No real-time sync** (orders stored in Google Sheets, not yet linked to real store)
-- ⚠️ Feature C and D are not filled with advanced tools or automation
+- ❌ Feature C and D are not filled with advanced tools or automation
 - ⚠️ **Firebase storage is public** – Anyone with the file URL can access uploads. **Do not use this setup in production**.
 
 ---
@@ -100,6 +100,7 @@ However, if you want to run it locally:
 git clone github.com/ishakos/Coliha.git
 npm install
 npm run dev
+
 
 
 
