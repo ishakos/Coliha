@@ -1,13 +1,13 @@
 "use client";
 
-import { AuthContext } from "../../context/authContext";
-import { SubscribeContext } from "../../context/subscribeContext";
+import { AuthContext } from "@/context/authContext";
+import { SubscribeContext } from "@/context/subscribeContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { usePathname } from "next/navigation";
-import Wilayas from "../../utils/wilayasData";
+import Wilayas from "@/utils/wilayasData";
 
 export default function FeatureB() {
   const { domain, orders, user } = AuthContext();

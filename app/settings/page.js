@@ -1,8 +1,8 @@
 "use client";
 
-import { useRedirect } from "../../hooks/useRedirect";
-import { AuthContext } from "../../context/authContext";
-import Settings from "../../components/settings/Settings";
+import { useRedirect } from "@/hooks/useRedirect";
+import { AuthContext } from "@/context/authContext";
+import Settings from "@/components/settings/Settings";
 
 export default function SettingsPage() {
   const { logged, loading } = AuthContext() || {};

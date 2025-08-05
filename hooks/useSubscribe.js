@@ -3,7 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { SubscribeContext } from "../context/subscribeContext";
 import { AuthContext } from "../context/authContext";
 import { toast } from "react-hot-toast";
-import { checkFeatureAccess, retry } from "../lib/useSubscribeLogic";
+import { checkFeatureAccess, retry } from "@/lib/useSubscribeLogic";
 
 export function useSubscribe() {
   const { loading, user, domain, setLogged } = AuthContext?.() ?? {};

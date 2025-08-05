@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { AuthContext } from "../../context/authContext";
+import { AuthContext } from "@/context/authContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import Wilayas from "../../utils/wilayasData";
+import Wilayas from "@/utils/wilayasData";
 
 export default function FeatureA() {
   const { purchasedOffer, user, orders, setOrders, domain } = AuthContext();

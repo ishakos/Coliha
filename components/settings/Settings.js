@@ -1,4 +1,4 @@
-import { AuthContext } from "../../context/authContext";
+import { AuthContext } from "@/context/authContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
@@ -9,7 +9,7 @@ import {
   deleteObject,
   getMetadata,
 } from "firebase/storage";
-import { storage } from "../../firebase";
+import { storage } from "@/firebase";
 import { toast } from "react-hot-toast";
 
 export default function Settings() {

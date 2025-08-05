@@ -1,10 +1,10 @@
-import { AuthContext } from "../../context/authContext";
+import { AuthContext } from "@/context/authContext";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../../firebase";
+import { storage } from "@/firebase";
 import { useRouter } from "next/navigation";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 export default function Subscriptions() {
   const { user, purchasedOffer, domain } = AuthContext();

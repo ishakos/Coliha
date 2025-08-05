@@ -1,9 +1,8 @@
 "use client";
 
-import { useContext } from "react";
-import Login from "../../../components/auth/Login";
-import { useRedirect } from "../../../hooks/useRedirect";
-import { AuthContext } from "../../../context/authContext.js";
+import Login from "@/components/auth/Login";
+import { AuthContext } from "@/context/authContext";
+import { useRedirect } from "@/hooks/useRedirect";
 
 export default function LoginPage() {
   const { loading, logged } = AuthContext() || {};

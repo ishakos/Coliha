@@ -1,11 +1,11 @@
-import { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../../context/authContext";
+import { useEffect, useState } from "react";
+import { AuthContext } from "@/context/authContext";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Wilayas from "../../utils/wilayasData";
+import Wilayas from "@/utils/wilayasData";
 
 export default function Register() {
   const [listOfUsers, setListOfUsers] = useState([]);

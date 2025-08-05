@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from "@/context/authContext";
 
 export function useRedirect() {
   const { logged, loading } = AuthContext?.() ?? {};

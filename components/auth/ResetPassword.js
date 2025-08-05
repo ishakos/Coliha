@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { AuthContext } from "../../context/authContext";
+import { AuthContext } from "@/context/authContext";
 
 export default function ResetPassword() {
   const [expired, setExpired] = useState(false);

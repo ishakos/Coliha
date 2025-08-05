@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthContext } from "../../context/authContext";
+import { AuthContext } from "@/context/authContext";
 import OrdersAnalytics from "./OrdersAnalytics";
 
 export default function Dashboard() {

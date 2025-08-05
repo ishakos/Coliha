@@ -1,7 +1,7 @@
 "use client";
 
-import { AuthContext } from "../../context/authContext";
-import { SubscribeContext } from "../../context/subscribeContext";
+import { AuthContext } from "@/context/authContext";
+import { SubscribeContext } from "@/context/subscribeContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
