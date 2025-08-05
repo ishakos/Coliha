@@ -20,6 +20,17 @@ It’s everything a seller needs to stay organized, save time, and get clear ins
 
 ---
 
+## 🌐 Tech Stack
+
+- **Next.js** 
+- **Tailwind CSS** for styling
+- **Axios** for API requests
+- **JWT**-based token management (via sessionStorage)
+- **React Router / Next.js routing** for protected pages
+- **React Context** for global state (auth, etc.)
+
+---
+
 ## 🛠️ Features Overview
 
 ### ✅ Authentication
@@ -92,6 +103,10 @@ However, if you want to run it locally:
 git clone github.com/ishakos/Coliha.git
 npm install
 npm run dev
+```  
+
+🧑‍💻 Author  
+Ishak – Full-stack 
 
 
 
