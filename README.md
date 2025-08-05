@@ -106,7 +106,8 @@ npm run dev
 ```  
 
 🧑‍💻 Author  
-Ishak – Full-stack 
+Ishak – Full-stack Web Developer
+
 
 
 
