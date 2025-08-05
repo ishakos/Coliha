@@ -3,7 +3,7 @@
 import { useContext } from "react";
 import Login from "../../../components/auth/Login";
 import { useRedirect } from "../../../hooks/useRedirect";
-import { AuthContext } from "../../../context/authContext";
+import { AuthContext } from "../../../context/authContext.js";
 
 export default function LoginPage() {
   const { loading, logged } = AuthContext() || {};
