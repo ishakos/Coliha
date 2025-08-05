@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";

@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 import { useRedirect } from "@/hooks/useRedirect";
 import Link from "next/link";
 

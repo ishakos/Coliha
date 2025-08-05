@@ -1,4 +1,4 @@
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";

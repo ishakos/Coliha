@@ -2,7 +2,7 @@
 
 import FeatureA from "@/components/dashboard/FeatureA";
 import { useRedirect } from "@/hooks/useRedirect";
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 import { useSubscribe } from "@/hooks/useSubscribe";
 
 export default function FeatureAPage() {

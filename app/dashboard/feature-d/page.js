@@ -1,7 +1,7 @@
 "use client";
 
 import { useRedirect } from "@/hooks/useRedirect";
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 import FeatureD from "@/components/dashboard/FeatureD";
 import { useSubscribe } from "@/hooks/useSubscribe";
 

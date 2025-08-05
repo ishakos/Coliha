@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import Header from "../components/Header";
-import { AuthProvider } from "@/context/authContext";
+import { AuthProvider } from "@/context/AuthContext";
 import { SubscribeProvider } from "../context/subscribeContext";
 import ErrorBoundaryWrapper from "@/components/errorBoundary/ErrorBoundaryWrapper";
 import { Toaster } from "react-hot-toast";

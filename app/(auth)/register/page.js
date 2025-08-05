@@ -2,7 +2,7 @@
 
 import { useRedirect } from "@/hooks/useRedirect";
 import Register from "@/components/auth/Register";
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function RegisterPage() {
   const { loading, logged } = AuthContext() || {};

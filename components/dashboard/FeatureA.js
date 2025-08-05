@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";

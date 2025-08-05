@@ -1,4 +1,4 @@
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
