@@ -1,4 +1,4 @@
-# 🚚 Coliha – Client Frontend
+# 🚚 Coliha – Built with Next.js
 
 Coliha is a web app that helps online store owners manage their orders more efficiently.
 
@@ -100,6 +100,7 @@ However, if you want to run it locally:
 git clone github.com/ishakos/Coliha.git
 npm install
 npm run dev
+
 
 
 
