@@ -32,32 +32,29 @@ It’s everything a seller needs to stay organized, save time, and get clear ins
 
 client/
 ├── app/
-│ ├── (auth)/ 
-│ ├── dashboard/ 
-│ ├── feature-a/ 
-│ ├── feature-b/ 
-│ ├── feature-c/ 
-│ ├── feature-d/ 
-│ ├── subscriptions/ 
-│ ├── settings/ 
-│ ├── no-access/ 
-│ ├── unwanted-page/ 
-│ ├── layout.js / page.js 
-│ └── favicon.ico
-├── components/ 
-│ ├── auth/ 
-│ ├── dashboard/ 
-│ ├── errorBoundary/ 
-│ └── subscriptions/ 
-├── context/ 
-├── hooks/ 
-├── lib/ 
-├── styles/ 
-├── utils/ 
-├── firebase.js 
-├── .gitignore
+│   ├── (auth)/
+│   ├── dashboard/
+│   ├── feature-a/
+│   ├── feature-b/
+│   ├── feature-c/
+│   ├── feature-d/
+│   ├── subscriptions/
+│   ├── settings/
+│   ├── no-access/
+│   ├── unwanted-page/
+│   ├── layout.js
+│   └── page.js
+├── components/
+├── context/
+├── hooks/
+├── lib/
+├── styles/
+├── utils/
+├── errorBoundary/
+├── firebase.js
 ├── package.json
 └── README.md
+
 
 ---
 
@@ -133,5 +130,6 @@ However, if you want to run it locally:
 git clone github.com/ishakos/Coliha.git
 npm install
 npm run dev
+
 
 
