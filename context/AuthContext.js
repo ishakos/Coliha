@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
   const [refresh, setRefresh] = useState(false);
   const firstRender = useRef(true);
 
-  const domain = "http://localhost:3001";
+  const domain = "https://coliha-server.onrender.com";
 
   const handleLogout = () => {
     setLogged(false);
