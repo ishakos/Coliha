@@ -1,27 +1,19 @@
 # 🚚 Coliha – Built with Next.js
 
 Coliha is a web app that helps online store owners manage their orders more efficiently.
-
 It connects directly to a Google Sheet that holds all the store's orders. These orders are displayed inside the Coliha app, where the seller can:
 
 ✅ View and manage products and orders
-
 📥 Automatically import new orders from their online store (via the linked Sheet)
-
 🚚 Send all confirmed orders at once to the shipping company (ZR Express) through a built-in API — no more copy-pasting orders one by one!
 
 This bulk shipping feature is Coliha's biggest time-saver, especially for sellers dealing with large volumes of orders daily.
 
 The app also includes a dashboard with detailed statistics, allowing sellers to:
-
 💰 Track total profits and earnings
-
 📉 See losses and canceled orders
-
 🛍️ Monitor best-selling products
-
 ⏳ Check order processing times
-
 📆 View daily/weekly/monthly sales trends
 
 It’s everything a seller needs to stay organized, save time, and get clear insights — all in one place.
@@ -100,6 +92,7 @@ However, if you want to run it locally:
 git clone github.com/ishakos/Coliha.git
 npm install
 npm run dev
+
 
 
 
