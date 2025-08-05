@@ -1,8 +1,30 @@
 # 🚚 Coliha – Client Frontend
 
-The **Coliha Client** is the user-facing frontend of the Coliha logistics platform. Built with **Next.js**, it allows clients to manage their subscription, handle orders, interact with third-party shipping APIs, and track their activity — all through a secure, structured, and cleanly written UI.
+Coliha is a web app that helps online store owners manage their orders more efficiently.
 
-> ✅ This project is designed to demonstrate full-stack web development skills including authentication, role-based access, data handling, component architecture, and feature planning.
+It connects directly to a Google Sheet that holds all the store's orders. These orders are displayed inside the Coliha app, where the seller can:
+
+✅ View and manage products and orders
+
+📥 Automatically import new orders from their online store (via the linked Sheet)
+
+🚚 Send all confirmed orders at once to the shipping company (ZR Express) through a built-in API — no more copy-pasting orders one by one!
+
+This bulk shipping feature is Coliha's biggest time-saver, especially for sellers dealing with large volumes of orders daily.
+
+The app also includes a dashboard with detailed statistics, allowing sellers to:
+
+💰 Track total profits and earnings
+
+📉 See losses and canceled orders
+
+🛍️ Monitor best-selling products
+
+⏳ Check order processing times
+
+📆 View daily/weekly/monthly sales trends
+
+It’s everything a seller needs to stay organized, save time, and get clear insights — all in one place.
 
 ---
 
@@ -97,18 +119,19 @@ client/
 
 - ❌ **No TypeScript** (currently using JavaScript)
 - ❌ **No real-time sync** (orders stored in Google Sheets, not yet linked to real store)
-- ❌ Feature C and D will are not filled with advanced tools or automation
+- ❌ Feature C and D are not filled with advanced tools or automation
 - ⚠️ **Firebase storage is public** – Anyone with the file URL can access uploads. **Do not use this setup in production**.
 
 ---
 
 ## 🚀 Getting Started
 
-This project is already deployed and live on: https://coliha.vercel.app
+This project is already deployed and live on: https://coliha.vercel.app  
 However, if you want to run it locally:
 
 ```bash
 git clone github.com/ishakos/Coliha.git
 npm install
 npm run dev
+
 
