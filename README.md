@@ -28,52 +28,6 @@ It’s everything a seller needs to stay organized, save time, and get clear ins
 
 ---
 
-## 🧱 Project Structure Overview
-
-client/
-├── app/                      # All routed pages live here
-│   ├── (auth)/               # Route group for auth
-│   │   ├── login/
-│   │   ├── register/
-│   │   ├── forgot-password/
-│   │   └── reset-password/
-│   ├── dashboard/            # Private user dashboard
-│   ├── subscriptions/        # Subscription-related pages
-│   ├── settings/             # User settings (password, email, etc.)
-│   ├── unwanted/             # Custom error or blocked access pages
-│   ├── layout.js             # App shell layout
-│   └── page.js               # Home or landing page
-│
-├── components/               # Reusable UI components
-│   ├── auth/
-│   ├── dashboard/
-│   ├── shared/
-│   └── ui/
-│
-├── lib/                      # Helpers and API clients
-│   ├── firebase.js           # Firebase config
-│   ├── auth.js               # Auth utilities
-│   └── validators.js
-│
-├── context/                  # React Contexts (auth, subscription, etc.)
-│
-├── hooks/                    # Custom React hooks
-│
-├── utils/                    # Utility functions (formatting, parsing, etc.)
-│
-├── styles/                   # Global & modular styles (Tailwind, etc.)
-│
-├── public/                   # Static assets (icons, logos, etc.)
-│
-├── middleware.ts            # Route guards if needed
-├── .env.local                # Environment variables
-├── package.json
-└── README.md
-
-
-
----
-
 ## 🛠️ Features Overview
 
 ### ✅ Authentication
@@ -146,6 +100,7 @@ However, if you want to run it locally:
 git clone github.com/ishakos/Coliha.git
 npm install
 npm run dev
+
 
 
 
