@@ -8,7 +8,7 @@ import {
   fetchOffer,
   fetchOrders,
   fetchProfilePicture,
-} from "@/lib/authContextLogic";
+} from "../lib/authContextLogic";
 import { toast } from "react-hot-toast";
 
 const AuthCtx = createContext(null);

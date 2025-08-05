@@ -1,9 +1,9 @@
 "use client";
 
-import { useRedirect } from "@/hooks/useRedirect";
-import { AuthContext } from "@/context/authContext";
-import FeatureD from "@/components/dashboard/FeatureD";
-import { useSubscribe } from "@/hooks/useSubscribe";
+import FeatureD from "../../../components/dashboard/FeatureD";
+import { useRedirect } from "../../../hooks/useRedirect";
+import { useSubscribe } from "../../../hooks/useSubscribe";
+import { AuthContext } from "../../../context/authContext";
 
 export default function FeatureDPage() {
   const { logged, loading } = AuthContext() || {};

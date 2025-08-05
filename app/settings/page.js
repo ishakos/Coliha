@@ -2,7 +2,7 @@
 
 import { useRedirect } from "../../hooks/useRedirect";
 import { AuthContext } from "../../context/authContext";
-import Settings from "@/components/settings/Settings";
+import Settings from "../../components/settings/Settings";
 
 export default function SettingsPage() {
   const { logged, loading } = AuthContext() || {};

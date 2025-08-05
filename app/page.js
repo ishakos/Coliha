@@ -2,7 +2,7 @@
 
 import Home from "../components/Home";
 import { AuthContext } from "../context/authContext";
-import { useRedirect } from "@/hooks/useRedirect";
+import { useRedirect } from "../hooks/useRedirect";
 
 export default function App() {
   const { logged, loading } = AuthContext() || {};

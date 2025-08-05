@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "../../context/authContext";
 
 export default function EmailVerification() {
   const [updated, setUpdated] = useState(false);

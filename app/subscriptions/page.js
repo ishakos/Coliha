@@ -2,7 +2,7 @@
 
 import { useRedirect } from "../../hooks/useRedirect";
 import { AuthContext } from "../../context/authContext";
-import Subscriptions from "@/components/subscriptions/Subscriptions";
+import Subscriptions from "../../components/subscriptions/Subscriptions";
 
 export default function SubscriptionsPage() {
   const { logged, loading } = AuthContext() || {};

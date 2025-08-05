@@ -1,9 +1,9 @@
 "use client";
 
-import { useRedirect } from "@/hooks/useRedirect";
-import { AuthContext } from "@/context/authContext";
-import FeatureC from "@/components/dashboard/FeatureC";
-import { useSubscribe } from "@/hooks/useSubscribe";
+import FeatureC from "../../../components/dashboard/FeatureC";
+import { useRedirect } from "../../../hooks/useRedirect";
+import { useSubscribe } from "../../../hooks/useSubscribe";
+import { AuthContext } from "../../../context/authContext";
 
 export default function FeatureCPage() {
   const { logged, loading } = AuthContext() || {};

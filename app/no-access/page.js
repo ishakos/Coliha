@@ -1,7 +1,7 @@
 "use client";
 
-import { AuthContext } from "@/context/authContext";
-import { useRedirect } from "@/hooks/useRedirect";
+import { AuthContext } from "../../context/authContext";
+import { useRedirect } from "../../hooks/useRedirect";
 import Link from "next/link";
 
 export default function NoAccessPage() {

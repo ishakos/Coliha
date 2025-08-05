@@ -1,11 +1,10 @@
 "use client";
 
-import { AuthContext } from "@/context/authContext";
-import { SubscribeContext } from "@/context/subscribeContext";
-import { useSubscribe } from "@/hooks/useSubscribe";
+import { AuthContext } from "../../context/authContext";
+import { SubscribeContext } from "../../context/subscribeContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 export default function FeatureC() {
   const { user, domain } = AuthContext();

@@ -1,8 +1,7 @@
 "use client";
 
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "../../context/authContext";
 import OrdersAnalytics from "./OrdersAnalytics";
-import { useSubscribe } from "@/hooks/useSubscribe";
 
 export default function Dashboard() {
   const { orders, user, purchasedOffer } = AuthContext();
